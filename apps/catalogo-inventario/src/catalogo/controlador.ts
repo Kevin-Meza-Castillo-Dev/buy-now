@@ -28,7 +28,21 @@ export class ControladorDelCatalogo {
   @Get("productos")
   @ApiOperation({
     summary: "Una página de 20 productos activos",
-    description: "Ordenados por el orden de su categoría y, dentro de ella, por nombre.",
+    description:
+      "Ordenados por el orden de su categoría y, dentro de ella, por nombre. " +
+      "`buscar` y `categoria` reducen la lista, y se pueden combinar.",
+  })
+  @ApiQuery({
+    name: "buscar",
+    required: false,
+    description: "Texto que debe estar en el nombre. No distingue mayúsculas ni tildes.",
+    schema: { type: "string", maxLength: 60 },
+  })
+  @ApiQuery({
+    name: "categoria",
+    required: false,
+    description: "Id de la categoría, de `GET /categorias`.",
+    schema: { type: "integer", minimum: 1 },
   })
   @ApiQuery({
     name: "pagina",

@@ -33,6 +33,57 @@
           }
         },
         {
+          "name": "Productos, búsqueda por nombre",
+          "request": {
+            "method": "GET",
+            "description": "Los productos con ese texto en el nombre. No distingue mayúsculas ni tildes: `limon` encuentra `Limón`.",
+            "url": {
+              "raw": "{{url}}/productos?buscar=limon",
+              "host": ["{{url}}"],
+              "path": ["productos"],
+              "query": [
+                { "key": "buscar", "value": "limon", "description": "Hasta 60 caracteres." }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Productos, por categoría",
+          "request": {
+            "method": "GET",
+            "description": "Los productos de una categoría.",
+            "url": {
+              "raw": "{{url}}/productos?categoria=1",
+              "host": ["{{url}}"],
+              "path": ["productos"],
+              "query": [
+                {
+                  "key": "categoria",
+                  "value": "1",
+                  "description": "Id de la categoría, de `GET /categorias`."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Productos, búsqueda dentro de una categoría",
+          "request": {
+            "method": "GET",
+            "description": "Los productos que cumplen las dos condiciones.",
+            "url": {
+              "raw": "{{url}}/productos?buscar=limon&categoria=1&pagina=1",
+              "host": ["{{url}}"],
+              "path": ["productos"],
+              "query": [
+                { "key": "buscar", "value": "limon" },
+                { "key": "categoria", "value": "1" },
+                { "key": "pagina", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
           "name": "Productos, página no válida (422)",
           "request": {
             "method": "GET",

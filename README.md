@@ -6,7 +6,7 @@ La regla central: el stock se reserva al entrar al carrito y ninguna unidad se p
 
 ## Estado
 
-En construcción. Hoy existen el monorepo, los contratos de las API y de los eventos, y el comienzo de `catalogo-inventario`: el modelo de datos, los 1.500 productos de prueba con sus fotos y el endpoint de categorías. Los demás servicios y la app todavía no.
+En construcción. Hoy existen el monorepo, los contratos de las API y de los eventos, y el comienzo de `catalogo-inventario`: el modelo de datos, los 1.500 productos de prueba con sus fotos y los endpoints de categorías y de productos, con páginas, búsqueda por nombre y filtro por categoría. Los demás servicios y la app todavía no.
 
 ## Partes
 
