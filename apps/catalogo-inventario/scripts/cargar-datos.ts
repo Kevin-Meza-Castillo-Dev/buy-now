@@ -1,5 +1,7 @@
+import { Redis } from "ioredis";
 import pg from "pg";
 import { normalizarNombre } from "../src/catalogo/normalizar-nombre.ts";
+import { borrarClaves, PREFIJO_DEL_CATALOGO, PREFIJO_DEL_STOCK } from "../src/claves-de-redis.ts";
 import { leerDatos, type DatosDePrueba } from "./datos.ts";
 
 // Carga el conjunto fijo de datos de prueba (RF-012). Se puede repetir: categorías y
@@ -64,6 +66,46 @@ export async function cargarDatos(
   );
 }
 
+// Después de la carga, lo que Redis guarda del catálogo ya no vale. El stock visible solo
+// cambia si se reinició: nadie más avisa de ese cambio, así que sus claves se borran y la
+// próxima lectura las vuelve a escribir desde Postgres.
+export async function borrarLoQueLaCargaDejaViejo(
+  redis: Redis,
+  opciones: { reiniciarStock: boolean },
+): Promise<void> {
+  await borrarClaves(redis, PREFIJO_DEL_CATALOGO);
+  if (opciones.reiniciarStock) {
+    await borrarClaves(redis, PREFIJO_DEL_STOCK);
+  }
+}
+
+// Redis es accesorio también aquí: si no está, la carga termina igual y avisa.
+async function limpiarRedis(reiniciarStock: boolean): Promise<void> {
+  const redisUrl = process.env.REDIS_URL;
+  if (!redisUrl) {
+    console.warn("Sin REDIS_URL: no se borró la caché del catálogo.");
+    return;
+  }
+  const redis = new Redis(redisUrl, {
+    lazyConnect: true,
+    connectTimeout: 1000,
+    maxRetriesPerRequest: 0,
+    retryStrategy: () => null,
+  });
+  redis.on("error", () => {});
+  try {
+    await redis.connect();
+    await borrarLoQueLaCargaDejaViejo(redis, { reiniciarStock });
+  } catch {
+    console.warn(
+      "Redis no responde: no se borró la caché del catálogo. Vence sola en 60 segundos" +
+        (reiniciarStock ? "; el stock visible puede quedar atrasado." : "."),
+    );
+  } finally {
+    redis.disconnect();
+  }
+}
+
 if (import.meta.main) {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
@@ -83,6 +125,7 @@ if (import.meta.main) {
   } finally {
     await cliente.end();
   }
+  await limpiarRedis(reiniciarStock);
   console.log(
     `${datos.productos.length} productos cargados${reiniciarStock ? ", con el stock reiniciado" : ""}.`,
   );
