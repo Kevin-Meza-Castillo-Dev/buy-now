@@ -6,7 +6,7 @@ La regla central: el stock se reserva al entrar al carrito y ninguna unidad se p
 
 ## Estado
 
-En construcción. Hoy existen el monorepo, los contratos de las API y de los eventos, y el comienzo de `catalogo-inventario`: el modelo de datos, los 1.500 productos de prueba con sus fotos y los endpoints del catálogo: categorías, lista de productos con páginas, búsqueda por nombre y filtro por categoría, detalle de un producto, fotos y stock visible, que se lee de Redis y, si Redis no responde, de Postgres. Las respuestas del catálogo se guardan 60 segundos en Redis. Los demás servicios y la app todavía no.
+En construcción. Hoy existen el monorepo, los contratos de las API y de los eventos, y el comienzo de `catalogo-inventario`: el modelo de datos, los 1.500 productos de prueba con sus fotos y los endpoints del catálogo: categorías, lista de productos con páginas, búsqueda por nombre y filtro por categoría, detalle de un producto, fotos y stock visible, que se lee de Redis y, si Redis no responde, de Postgres. Las respuestas del catálogo se guardan 60 segundos en Redis, y cada IP tiene un límite de peticiones por minuto. Los demás servicios y la app todavía no.
 
 ## Partes
 
@@ -67,6 +67,14 @@ pnpm -r migrate
 pnpm --filter catalogo-inventario datos:cargar
 pnpm --filter catalogo-inventario start
 ```
+
+Variables opcionales de `catalogo-inventario`:
+
+| Variable | Qué hace | Por defecto |
+| --- | --- | --- |
+| `PUERTO` | Puerto en el que escucha | 3000 |
+| `LIMITE_DE_PETICIONES_POR_MINUTO` | Peticiones por minuto que se aceptan de una IP; al pasarlo responde 429. Con 0 no limita. Las fotos no cuentan | 300 |
+| `SALTOS_DE_PROXY` | Cuántos proxies hay delante, para tomar la IP del cliente de `X-Forwarded-For`. Con 0 la cabecera se ignora | 0 |
 
 ## Fotos de los productos
 

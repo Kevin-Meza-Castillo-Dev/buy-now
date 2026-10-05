@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Controller, Get, Header, NotFoundException, Param, StreamableFile } from "@nestjs/common";
+import { SinLimiteDePeticiones } from "../limite-de-peticiones.ts";
 import { ApiNotFoundResponse, ApiOperation, ApiParam, ApiProduces, ApiTags } from "@nestjs/swagger";
 
 // La carpeta queda a la misma distancia de src/fotos/ que de dist/fotos/.
@@ -12,8 +13,9 @@ const NOMBRE_DE_FOTO = /^[a-z0-9]+(-[a-z0-9]+)*\.webp$/;
 
 const TREINTA_DIAS = 30 * 24 * 60 * 60;
 
-// Las fotos de los productos. No exigen sesión.
+// Las fotos de los productos. No exigen sesión ni cuentan para el límite de peticiones.
 @ApiTags("Fotos")
+@SinLimiteDePeticiones()
 @Controller("fotos")
 export class ControladorDeFotos {
   @Get(":archivo")
