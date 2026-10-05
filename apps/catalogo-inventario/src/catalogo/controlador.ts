@@ -1,15 +1,26 @@
 import {
   consultaProductos,
   error,
+  productoDetalle,
+  productoId,
   respuestaCategorias,
   respuestaProductos,
   type Categoria,
+  type ProductoDetalle,
   type RespuestaProductos,
 } from "@buy-now/contratos";
-import { Controller, Get, Inject, Query } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Inject, Param, Query } from "@nestjs/common";
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { esquemaDe } from "../documentacion.ts";
-import { datosInvalidos } from "../error-de-api.ts";
+import { datosInvalidos, ErrorDeApi } from "../error-de-api.ts";
 import { ConsultasDelCatalogo } from "./consultas.ts";
 
 // Endpoints del catálogo. Ninguno exige sesión.
@@ -62,5 +73,23 @@ export class ControladorDelCatalogo {
       throw datosInvalidos(consulta.error);
     }
     return this.consultas.productos(consulta.data);
+  }
+
+  @Get("productos/:id")
+  @ApiOperation({ summary: "Un producto activo, con su descripción y su categoría" })
+  @ApiParam({ name: "id", schema: { type: "integer", minimum: 1 } })
+  @ApiOkResponse({ schema: esquemaDe(productoDetalle) })
+  @ApiNotFoundResponse({
+    description: "`producto_no_encontrado`: el producto no existe o no está activo.",
+    schema: esquemaDe(error),
+  })
+  async producto(@Param("id") texto: string): Promise<ProductoDetalle> {
+    // Un id que no es un entero positivo no es de ningún producto: mismo 404.
+    const id = /^\d+$/.test(texto) ? productoId.safeParse(Number(texto)) : undefined;
+    const producto = id?.success ? await this.consultas.producto(id.data) : undefined;
+    if (!producto) {
+      throw new ErrorDeApi(404, "producto_no_encontrado", "Este producto ya no está disponible.");
+    }
+    return producto;
   }
 }

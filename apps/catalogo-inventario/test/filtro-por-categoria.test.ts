@@ -54,6 +54,8 @@ describe("GET /productos?categoria=", () => {
   it("una categoría sin productos, o que no existe, devuelve la lista vacía", async () => {
     expect(await nombres({ categoria: 3 })).toEqual([]);
     expect(await nombres({ categoria: 999 })).toEqual([]);
+    expect(await nombres({ categoria: 40000 })).toEqual([]);
+    expect(await nombres({ categoria: 99999999999 })).toEqual([]);
   });
 
   it("pagina los productos de la categoría", async () => {
