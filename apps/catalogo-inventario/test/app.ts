@@ -1,7 +1,8 @@
-import { FastifyAdapter, type NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { Test } from "@nestjs/testing";
 import { drizzle } from "drizzle-orm/node-postgres";
 import type pg from "pg";
+import { adaptadorHttp } from "../src/adaptador.ts";
 import { ModuloApp } from "../src/app.ts";
 import { BASE_DE_DATOS } from "../src/db/base.ts";
 import { montarDocumentacion } from "../src/documentacion.ts";
@@ -14,7 +15,7 @@ export async function levantarApp(cliente: pg.Client): Promise<NestFastifyApplic
     .overrideProvider(BASE_DE_DATOS)
     .useValue(drizzle(cliente))
     .compile();
-  const app = modulo.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+  const app = modulo.createNestApplication<NestFastifyApplication>(adaptadorHttp());
   montarDocumentacion(app);
   await app.init();
   await app.getHttpAdapter().getInstance().ready();

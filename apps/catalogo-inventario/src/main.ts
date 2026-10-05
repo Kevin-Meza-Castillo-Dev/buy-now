@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import { NestFactory } from "@nestjs/core";
-import { FastifyAdapter, type NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { adaptadorHttp } from "./adaptador.ts";
 import { ModuloApp } from "./app.ts";
 import { montarDocumentacion } from "./documentacion.ts";
 
-const app = await NestFactory.create<NestFastifyApplication>(ModuloApp, new FastifyAdapter());
+const app = await NestFactory.create<NestFastifyApplication>(ModuloApp, adaptadorHttp());
 app.enableShutdownHooks();
 montarDocumentacion(app);
 // 0.0.0.0 para que el contenedor acepte conexiones de fuera.

@@ -10,6 +10,9 @@ export const PREFIJO_DEL_CATALOGO = "catalogo:";
 // Stock visible: `stock:{producto_id}`, un hash con `disponible` y `version`.
 export const PREFIJO_DEL_STOCK = "stock:";
 
+// Peticiones de una IP en un minuto: `limite:{ip}:{minuto}`, un contador que vence solo.
+export const PREFIJO_DEL_LIMITE = "limite:";
+
 // Borra todas las claves que empiezan por el prefijo. Recorre con SCAN, para no detener
 // Redis como lo haría KEYS.
 export async function borrarClaves(redis: Redis, prefijo: string): Promise<void> {

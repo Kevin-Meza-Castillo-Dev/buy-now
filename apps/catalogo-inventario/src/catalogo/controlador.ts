@@ -21,10 +21,12 @@ import {
 } from "@nestjs/swagger";
 import { esquemaDe } from "../documentacion.ts";
 import { datosInvalidos, ErrorDeApi } from "../error-de-api.ts";
+import { RespuestaDeLimite } from "../limite-de-peticiones.ts";
 import { ConsultasDelCatalogo } from "./consultas.ts";
 
 // Endpoints del catálogo. Ninguno exige sesión.
 @ApiTags("Catálogo")
+@RespuestaDeLimite()
 @Controller()
 export class ControladorDelCatalogo {
   constructor(@Inject(ConsultasDelCatalogo) private readonly consultas: ConsultasDelCatalogo) {}
