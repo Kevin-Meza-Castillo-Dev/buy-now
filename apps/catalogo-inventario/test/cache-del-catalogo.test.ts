@@ -181,7 +181,9 @@ describe("caché del catálogo", () => {
     it("con el stock reiniciado, borra también el stock visible", async () => {
       await borrarLoQueLaCargaDejaViejo(redis, { reiniciarStock: true });
 
-      expect(await redis.keys("*")).toEqual(["otra:clave"]);
+      expect(await clavesDelCatalogo()).toEqual([]);
+      expect(await redis.keys("stock:*")).toEqual([]);
+      expect(await redis.get("otra:clave")).toBe("se queda");
     });
   });
 });

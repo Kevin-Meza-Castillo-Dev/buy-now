@@ -3,10 +3,12 @@ import { Controller, Get, Header, Inject, Query } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { esquemaDe } from "../documentacion.ts";
 import { datosInvalidos } from "../error-de-api.ts";
+import { RespuestaDeLimite } from "../limite-de-peticiones.ts";
 import { StockVisible } from "./stock-visible.ts";
 
 // El stock visible de los productos en pantalla. No exige sesión.
 @ApiTags("Stock")
+@RespuestaDeLimite()
 @Controller("stock")
 export class ControladorDeStock {
   constructor(@Inject(StockVisible) private readonly stockVisible: StockVisible) {}
