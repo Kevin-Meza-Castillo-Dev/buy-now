@@ -8,8 +8,8 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-# Redis, Kafka y la imagen Docker entran más adelante en la Fase 2, cuando haya código
-# que los use.
+# Kafka y la imagen Docker entran más adelante en la Fase 2, cuando haya código que los
+# use.
 jobs:
   validar:
     runs-on: ubuntu-latest
@@ -24,9 +24,17 @@ jobs:
           --health-cmd "pg_isready -U postgres"
           --health-interval 5s
           --health-retries 10
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-retries 10
     env:
       # Credenciales del contenedor de pruebas del job; no son un secreto.
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/buy_now
+      REDIS_URL: redis://localhost:6379
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4

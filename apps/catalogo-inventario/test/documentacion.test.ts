@@ -55,7 +55,13 @@ describe("documentación del API", () => {
   it("GET /docs-json describe los endpoints del catálogo en OpenAPI 3", () => {
     expect(documento.openapi).toMatch(/^3\./);
     expect(Object.keys(documento.paths)).toEqual(
-      expect.arrayContaining(["/categorias", "/productos", "/productos/{id}", "/fotos/{archivo}"]),
+      expect.arrayContaining([
+        "/categorias",
+        "/productos",
+        "/productos/{id}",
+        "/fotos/{archivo}",
+        "/stock",
+      ]),
     );
     expect(documento.paths["/productos"]!.get!.parameters!.map((p) => p.name).sort()).toEqual([
       "buscar",
