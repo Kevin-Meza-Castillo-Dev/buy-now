@@ -8,8 +8,7 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
-# Kafka y la imagen Docker entran más adelante en la Fase 2, cuando haya código que los
-# use.
+# La imagen Docker entra más adelante en la Fase 2, cuando haya código que la use.
 jobs:
   validar:
     runs-on: ubuntu-latest
@@ -31,10 +30,26 @@ jobs:
           --health-cmd "redis-cli ping"
           --health-interval 5s
           --health-retries 10
+      # Un broker en modo KRaft. Se anuncia como 127.0.0.1 para que el cliente no pruebe
+      # antes por IPv6.
+      kafka:
+        image: apache/kafka:4.1.0
+        env:
+          KAFKA_NODE_ID: 1
+          KAFKA_PROCESS_ROLES: broker,controller
+          KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+          KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+          KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+        ports: ["9092:9092"]
     env:
       # Credenciales del contenedor de pruebas del job; no son un secreto.
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/buy_now
       REDIS_URL: redis://localhost:6379
+      KAFKA_BROKERS: 127.0.0.1:9092
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
