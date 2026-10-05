@@ -2,6 +2,7 @@ import {
   TAMANO_PAGINA,
   type Categoria,
   type ConsultaProductos,
+  type ProductoDetalle,
   type RespuestaProductos,
 } from "@buy-now/contratos";
 import { Inject, Injectable } from "@nestjs/common";
@@ -9,6 +10,11 @@ import { and, asc, eq, like, sql } from "drizzle-orm";
 import { BASE_DE_DATOS, type BaseDeDatos } from "../db/base.ts";
 import { categorias, productos, stock } from "../db/esquema.ts";
 import { normalizarNombre } from "./normalizar-nombre.ts";
+
+// Los ids de categoría son smallint y los de producto, integer. Un número mayor no puede
+// ser de ninguna fila, y Postgres lo rechazaría al compararlo.
+const MAYOR_ID_DE_CATEGORIA = 32_767;
+const MAYOR_ID_DE_PRODUCTO = 2_147_483_647;
 
 // Las lecturas del catálogo en Postgres.
 @Injectable()
@@ -30,6 +36,9 @@ export class ConsultasDelCatalogo {
     // El texto se normaliza igual que el nombre guardado. Las barras escapan % y _, para
     // que se busquen como texto y no como comodines de LIKE.
     const texto = normalizarNombre(consulta.buscar ?? "").replace(/[\\%_]/g, "\\$&");
+    if (consulta.categoria !== undefined && consulta.categoria > MAYOR_ID_DE_CATEGORIA) {
+      return { productos: [], pagina: consulta.pagina, hay_mas: false };
+    }
     const filas = await this.base
       .select({
         id: productos.id,
@@ -70,5 +79,33 @@ export class ConsultasDelCatalogo {
       pagina: consulta.pagina,
       hay_mas: filas.length > TAMANO_PAGINA,
     };
+  }
+
+  // Un producto activo con su descripción y su categoría (RF-002). Sin valor si no existe
+  // o no está activo.
+  async producto(id: number): Promise<ProductoDetalle | undefined> {
+    if (id > MAYOR_ID_DE_PRODUCTO) {
+      return undefined;
+    }
+    const [fila] = await this.base
+      .select({
+        id: productos.id,
+        nombre: productos.nombre,
+        precio_centavos: productos.precioCentavos,
+        foto_ruta: productos.fotoRuta,
+        categoria_id: productos.categoriaId,
+        stock_visible: sql<number>`coalesce(${stock.disponible}, 0)`,
+        descripcion: productos.descripcion,
+        categoria: { id: categorias.id, nombre: categorias.nombre },
+      })
+      .from(productos)
+      .innerJoin(categorias, eq(categorias.id, productos.categoriaId))
+      .leftJoin(stock, eq(stock.productoId, productos.id))
+      .where(and(eq(productos.id, id), eq(productos.activo, true)));
+    if (!fila) {
+      return undefined;
+    }
+    const { foto_ruta, ...producto } = fila;
+    return { ...producto, foto_url: `/fotos/${foto_ruta}` };
   }
 }

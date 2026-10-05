@@ -84,6 +84,25 @@
           }
         },
         {
+          "name": "Producto, detalle",
+          "request": {
+            "method": "GET",
+            "description": "Un producto activo con su descripción, su categoría y sus unidades disponibles. Si no existe o no está activo, responde 404 `producto_no_encontrado`.",
+            "url": {
+              "raw": "{{url}}/productos/:id",
+              "host": ["{{url}}"],
+              "path": ["productos", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Id del producto. Toma uno de la lista de productos."
+                }
+              ]
+            }
+          }
+        },
+        {
           "name": "Productos, página no válida (422)",
           "request": {
             "method": "GET",
@@ -93,6 +112,24 @@
               "host": ["{{url}}"],
               "path": ["productos"],
               "query": [{ "key": "pagina", "value": "0" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fotos",
+      "item": [
+        {
+          "name": "Foto de un producto",
+          "request": {
+            "method": "GET",
+            "description": "La imagen en WebP de 480 × 480. La ruta viene en `foto_url`.",
+            "url": {
+              "raw": "{{url}}/fotos/:archivo",
+              "host": ["{{url}}"],
+              "path": ["fotos", ":archivo"],
+              "variable": [{ "key": "archivo", "value": "limon.webp" }]
             }
           }
         }
