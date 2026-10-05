@@ -13,8 +13,11 @@ export function esquemaDe(contrato: z.ZodType): Esquema {
 }
 
 // Publica Swagger en /docs y el documento OpenAPI en /docs-json. Se llama antes de
-// iniciar la aplicación.
+// iniciar la aplicación. Es una ayuda de desarrollo: con NODE_ENV=production no se monta.
 export function montarDocumentacion(app: NestFastifyApplication): void {
+  if (process.env.NODE_ENV === "production") {
+    return;
+  }
   const configuracion = new DocumentBuilder()
     .setTitle("Buy Now: catálogo e inventario")
     .setDescription("Productos, categorías, stock visible y fotos. El catálogo no exige sesión.")
