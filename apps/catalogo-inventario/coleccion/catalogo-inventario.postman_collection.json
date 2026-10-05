@@ -118,6 +118,43 @@
       ]
     },
     {
+      "name": "Stock",
+      "item": [
+        {
+          "name": "Stock visible de varios productos",
+          "request": {
+            "method": "GET",
+            "description": "Las unidades disponibles de 1 a 50 productos. La respuesta se puede guardar en caché 5 segundos. Un id que no es de ningún producto no aparece.",
+            "url": {
+              "raw": "{{url}}/stock?ids=1,2,3",
+              "host": ["{{url}}"],
+              "path": ["stock"],
+              "query": [
+                {
+                  "key": "ids",
+                  "value": "1,2,3",
+                  "description": "Ids de producto separados por coma. Toma algunos de la lista de productos."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Stock, ids no válidos (422)",
+          "request": {
+            "method": "GET",
+            "description": "Responde 422 `datos_invalidos` con el campo `ids`.",
+            "url": {
+              "raw": "{{url}}/stock?ids=1,abc",
+              "host": ["{{url}}"],
+              "path": ["stock"],
+              "query": [{ "key": "ids", "value": "1,abc" }]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Fotos",
       "item": [
         {

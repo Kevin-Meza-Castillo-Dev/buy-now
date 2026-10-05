@@ -8,7 +8,8 @@ import {
 import { Inject, Injectable } from "@nestjs/common";
 import { and, asc, eq, like, sql } from "drizzle-orm";
 import { BASE_DE_DATOS, type BaseDeDatos } from "../db/base.ts";
-import { categorias, productos, stock } from "../db/esquema.ts";
+import { categorias, productos } from "../db/esquema.ts";
+import { StockVisible } from "../stock-visible/stock-visible.ts";
 import { normalizarNombre } from "./normalizar-nombre.ts";
 
 // Los ids de categoría son smallint y los de producto, integer. Un número mayor no puede
@@ -19,7 +20,10 @@ const MAYOR_ID_DE_PRODUCTO = 2_147_483_647;
 // Las lecturas del catálogo en Postgres.
 @Injectable()
 export class ConsultasDelCatalogo {
-  constructor(@Inject(BASE_DE_DATOS) private readonly base: BaseDeDatos) {}
+  constructor(
+    @Inject(BASE_DE_DATOS) private readonly base: BaseDeDatos,
+    @Inject(StockVisible) private readonly stockVisible: StockVisible,
+  ) {}
 
   // Todas las categorías, en su orden de aparición (RF-004).
   async categorias(): Promise<Categoria[]> {
@@ -46,11 +50,9 @@ export class ConsultasDelCatalogo {
         precio_centavos: productos.precioCentavos,
         foto_ruta: productos.fotoRuta,
         categoria_id: productos.categoriaId,
-        stock_visible: sql<number>`coalesce(${stock.disponible}, 0)`,
       })
       .from(productos)
       .innerJoin(categorias, eq(categorias.id, productos.categoriaId))
-      .leftJoin(stock, eq(stock.productoId, productos.id))
       .where(
         and(
           eq(productos.activo, true),
@@ -71,10 +73,13 @@ export class ConsultasDelCatalogo {
       .limit(TAMANO_PAGINA + 1)
       .offset((consulta.pagina - 1) * TAMANO_PAGINA);
 
+    const pagina = filas.slice(0, TAMANO_PAGINA);
+    const disponibles = await this.stockVisible.de(pagina.map((producto) => producto.id));
     return {
-      productos: filas.slice(0, TAMANO_PAGINA).map(({ foto_ruta, ...producto }) => ({
+      productos: pagina.map(({ foto_ruta, ...producto }) => ({
         ...producto,
         foto_url: `/fotos/${foto_ruta}`,
+        stock_visible: disponibles.get(producto.id) ?? 0,
       })),
       pagina: consulta.pagina,
       hay_mas: filas.length > TAMANO_PAGINA,
@@ -94,18 +99,21 @@ export class ConsultasDelCatalogo {
         precio_centavos: productos.precioCentavos,
         foto_ruta: productos.fotoRuta,
         categoria_id: productos.categoriaId,
-        stock_visible: sql<number>`coalesce(${stock.disponible}, 0)`,
         descripcion: productos.descripcion,
         categoria: { id: categorias.id, nombre: categorias.nombre },
       })
       .from(productos)
       .innerJoin(categorias, eq(categorias.id, productos.categoriaId))
-      .leftJoin(stock, eq(stock.productoId, productos.id))
       .where(and(eq(productos.id, id), eq(productos.activo, true)));
     if (!fila) {
       return undefined;
     }
     const { foto_ruta, ...producto } = fila;
-    return { ...producto, foto_url: `/fotos/${foto_ruta}` };
+    const disponibles = await this.stockVisible.de([id]);
+    return {
+      ...producto,
+      foto_url: `/fotos/${foto_ruta}`,
+      stock_visible: disponibles.get(id) ?? 0,
+    };
   }
 }

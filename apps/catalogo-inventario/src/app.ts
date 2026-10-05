@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ModuloCatalogo } from "./catalogo/modulo.ts";
 import { ModuloFotos } from "./fotos/modulo.ts";
+import { ModuloStockVisible } from "./stock-visible/modulo.ts";
 
-@Module({ imports: [ModuloCatalogo, ModuloFotos] })
+@Module({ imports: [ModuloCatalogo, ModuloFotos, ModuloStockVisible] })
 export class ModuloApp {}

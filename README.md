@@ -6,7 +6,7 @@ La regla central: el stock se reserva al entrar al carrito y ninguna unidad se p
 
 ## Estado
 
-En construcción. Hoy existen el monorepo, los contratos de las API y de los eventos, y el comienzo de `catalogo-inventario`: el modelo de datos, los 1.500 productos de prueba con sus fotos y los endpoints del catálogo: categorías, lista de productos con páginas, búsqueda por nombre y filtro por categoría, detalle de un producto y fotos. Los demás servicios y la app todavía no.
+En construcción. Hoy existen el monorepo, los contratos de las API y de los eventos, y el comienzo de `catalogo-inventario`: el modelo de datos, los 1.500 productos de prueba con sus fotos y los endpoints del catálogo: categorías, lista de productos con páginas, búsqueda por nombre y filtro por categoría, detalle de un producto, fotos y stock visible, que se lee de Redis y, si Redis no responde, de Postgres. Los demás servicios y la app todavía no.
 
 ## Partes
 
@@ -59,7 +59,7 @@ Swagger es solo para desarrollo: con `NODE_ENV=production` el servicio no lo pub
 - Swagger: `http://localhost:3000/docs`. El documento OpenAPI está en `/docs-json`.
 - Postman: importa `apps/catalogo-inventario/coleccion/catalogo-inventario.postman_collection.json`. La variable `url` apunta a `http://localhost:3000`.
 
-Para arrancarlo hacen falta un Postgres y la variable `DATABASE_URL`:
+Para arrancarlo hacen falta un Postgres y las variables `DATABASE_URL` y `REDIS_URL`. Si el Redis de `REDIS_URL` no responde, el servicio arranca igual y lee el stock de Postgres:
 
 ```sh
 pnpm -r build
