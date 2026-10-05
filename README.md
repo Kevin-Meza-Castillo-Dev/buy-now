@@ -52,6 +52,22 @@ Desde la raíz:
 | `pnpm run formato` | Aplica Prettier; `formato:revisar` solo comprueba |
 | `pnpm --filter catalogo-inventario fotos:descargar` | Baja las fotos de `datos/fotos.json` que falten en `fotos/` y las recorta |
 
+## Documentación del API
+
+Swagger es solo para desarrollo: con `NODE_ENV=production` el servicio no lo publica. Con `catalogo-inventario` corriendo en local:
+
+- Swagger: `http://localhost:3000/docs`. El documento OpenAPI está en `/docs-json`.
+- Postman: importa `apps/catalogo-inventario/coleccion/catalogo-inventario.postman_collection.json`. La variable `url` apunta a `http://localhost:3000`.
+
+Para arrancarlo hacen falta un Postgres y la variable `DATABASE_URL`:
+
+```sh
+pnpm -r build
+pnpm -r migrate
+pnpm --filter catalogo-inventario datos:cargar
+pnpm --filter catalogo-inventario start
+```
+
 ## Fotos de los productos
 
 Las fotos de los productos de prueba están en `apps/catalogo-inventario/fotos/`. Son fotos reales con licencia libre, tomadas de [Wikimedia Commons](https://commons.wikimedia.org), una por tipo de producto. El autor, la licencia y la fuente de cada una están en `apps/catalogo-inventario/datos/fotos.json`.
