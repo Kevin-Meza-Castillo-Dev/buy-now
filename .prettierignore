@@ -9,3 +9,4 @@ specs
 .specify
 *.md
 **/migraciones/meta
+**/datos/productos.json
