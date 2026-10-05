@@ -5,9 +5,10 @@ import {
   type RespuestaProductos,
 } from "@buy-now/contratos";
 import { Inject, Injectable } from "@nestjs/common";
-import { asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, like, sql } from "drizzle-orm";
 import { BASE_DE_DATOS, type BaseDeDatos } from "../db/base.ts";
 import { categorias, productos, stock } from "../db/esquema.ts";
+import { normalizarNombre } from "./normalizar-nombre.ts";
 
 // Las lecturas del catálogo en Postgres.
 @Injectable()
@@ -23,8 +24,12 @@ export class ConsultasDelCatalogo {
   }
 
   // Una página de productos activos, por el orden de su categoría y después por nombre
-  // (RF-001, RF-005).
+  // (RF-001, RF-005). `buscar` reduce la lista a los que tienen ese texto en el nombre (RF-003)
+  // y `categoria`, a los de esa categoría (RF-004).
   async productos(consulta: ConsultaProductos): Promise<RespuestaProductos> {
+    // El texto se normaliza igual que el nombre guardado. Las barras escapan % y _, para
+    // que se busquen como texto y no como comodines de LIKE.
+    const texto = normalizarNombre(consulta.buscar ?? "").replace(/[\\%_]/g, "\\$&");
     const filas = await this.base
       .select({
         id: productos.id,
@@ -37,7 +42,15 @@ export class ConsultasDelCatalogo {
       .from(productos)
       .innerJoin(categorias, eq(categorias.id, productos.categoriaId))
       .leftJoin(stock, eq(stock.productoId, productos.id))
-      .where(eq(productos.activo, true))
+      .where(
+        and(
+          eq(productos.activo, true),
+          texto === "" ? undefined : like(productos.nombreBusqueda, `%${texto}%`),
+          consulta.categoria === undefined
+            ? undefined
+            : eq(productos.categoriaId, consulta.categoria),
+        ),
+      )
       // El nombre sin tildes y con la intercalación "C" ordena igual en cualquier
       // Postgres. El id desempata, para que las páginas no repitan ni salten productos.
       .orderBy(

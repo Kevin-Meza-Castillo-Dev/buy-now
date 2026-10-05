@@ -14,7 +14,10 @@ const COLECCION = new URL(
   import.meta.url,
 );
 
-type Peticion = { name: string; request: { method: string; url: { raw: string; path: string[] } } };
+type Peticion = {
+  name: string;
+  request: { method: string; url: { raw: string; path: string[]; query?: { key: string }[] } };
+};
 type Carpeta = { name: string; item: (Peticion | Carpeta)[] };
 
 function peticiones(elementos: (Peticion | Carpeta)[]): Peticion[] {
@@ -28,7 +31,7 @@ describe("documentación del API", () => {
   let app: NestFastifyApplication;
   let documento: {
     openapi: string;
-    paths: Record<string, Record<string, { parameters?: { name: string }[] }>>;
+    paths: Record<string, Record<string, { parameters?: { name: string; in: string }[] }>>;
   };
 
   beforeAll(async () => {
@@ -54,7 +57,11 @@ describe("documentación del API", () => {
     expect(Object.keys(documento.paths)).toEqual(
       expect.arrayContaining(["/categorias", "/productos"]),
     );
-    expect(documento.paths["/productos"]!.get!.parameters!.map((p) => p.name)).toContain("pagina");
+    expect(documento.paths["/productos"]!.get!.parameters!.map((p) => p.name).sort()).toEqual([
+      "buscar",
+      "categoria",
+      "pagina",
+    ]);
   });
 
   it("las respuestas salen de los esquemas del contrato", () => {
@@ -78,6 +85,23 @@ describe("documentación del API", () => {
     );
 
     expect([...new Set(enLaColeccion)].sort()).toEqual(enElServicio.sort());
+  });
+
+  it("la colección usa cada parámetro de consulta en alguna petición", async () => {
+    const coleccion = JSON.parse(await readFile(COLECCION, "utf8")) as Carpeta;
+    const usados = new Set(
+      peticiones(coleccion.item).flatMap(({ request: { url } }) =>
+        (url.query ?? []).map((parametro) => `/${url.path.join("/")} ${parametro.key}`),
+      ),
+    );
+
+    for (const [ruta, metodos] of Object.entries(documento.paths)) {
+      for (const parametro of metodos.get?.parameters ?? []) {
+        if (parametro.in === "query") {
+          expect(usados, `${ruta} ${parametro.name}`).toContain(`${ruta} ${parametro.name}`);
+        }
+      }
+    }
   });
 
   it("las peticiones de la colección usan la variable {{url}}", async () => {
