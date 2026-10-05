@@ -10,3 +10,4 @@ specs
 *.md
 **/migraciones/meta
 **/datos/productos.json
+**/datos/fotos.json

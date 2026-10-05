@@ -56,7 +56,7 @@ describe("carga de los datos de prueba", () => {
       nombre_busqueda: "limon verde valle 250 g",
       descripcion: primero.descripcion,
       precio_centavos: primero.precio_centavos,
-      foto_ruta: "SUP-0001.webp",
+      foto_ruta: "limon.webp",
       categoria_id: 1,
       activo: true,
       disponible: primero.stock_inicial,

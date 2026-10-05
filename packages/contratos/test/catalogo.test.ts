@@ -10,7 +10,7 @@ const resumen = {
   id: 1,
   nombre: "Limón",
   precio_centavos: 150,
-  foto_url: "/fotos/SUP-0001.webp",
+  foto_url: "/fotos/limon.webp",
   categoria_id: 3,
   stock_visible: 12,
 };
