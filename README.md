@@ -49,6 +49,13 @@ Desde la raíz:
 | `pnpm -r typecheck` | Revisa los tipos en todos los paquetes |
 | `pnpm -r test` | Pruebas unitarias |
 | `pnpm run formato` | Aplica Prettier; `formato:revisar` solo comprueba |
+| `pnpm --filter catalogo-inventario fotos:descargar` | Baja las fotos de `datos/fotos.json` que falten en `fotos/` y las recorta |
+
+## Fotos de los productos
+
+Las fotos de los productos de prueba están en `apps/catalogo-inventario/fotos/`. Son fotos reales con licencia libre, tomadas de [Wikimedia Commons](https://commons.wikimedia.org), una por tipo de producto. El autor, la licencia y la fuente de cada una están en `apps/catalogo-inventario/datos/fotos.json`.
+
+Algunas muestran envases con marcas reales. Esas marcas pertenecen a sus dueños y no tienen relación con este proyecto.
 
 ## Cómo se trabaja
 

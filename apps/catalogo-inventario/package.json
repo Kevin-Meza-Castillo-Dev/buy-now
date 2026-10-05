@@ -12,7 +12,7 @@
     "migraciones:generar": "drizzle-kit generate",
     "datos:generar": "node scripts/generar-datos.ts",
     "datos:cargar": "node scripts/cargar-datos.ts",
-    "fotos:generar": "node scripts/generar-fotos.ts"
+    "fotos:descargar": "node scripts/descargar-fotos.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.3",
