@@ -7,7 +7,9 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:integration": "vitest run --config vitest.integracion.config.ts"
+    "test:integration": "vitest run --config vitest.integracion.config.ts",
+    "migrate": "node src/db/migrar.ts",
+    "migraciones:generar": "drizzle-kit generate"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.3",
