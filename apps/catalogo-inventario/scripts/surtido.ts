@@ -4,8 +4,6 @@
 
 export type CategoriaDelSurtido = {
   nombre: string;
-  // Color de fondo de las fotos generadas.
-  color: string;
   frase: string;
   marcas: string[];
   presentaciones: [etiqueta: string, factor: number][];
@@ -15,7 +13,6 @@ export type CategoriaDelSurtido = {
 export const SURTIDO: CategoriaDelSurtido[] = [
   {
     nombre: "Frutas y verduras",
-    color: "#2E7D32",
     frase: "Producto fresco, seleccionado a diario.",
     marcas: ["Huerta Viva", "Campo Claro", "Finca El Roble", "Verde Valle"],
     presentaciones: [
@@ -55,7 +52,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Carnes y pescados",
-    color: "#B23A3A",
     frase: "Empacado al vacío y mantenido en cadena de frío.",
     marcas: ["Don Fermín", "Corral Norte", "Mar Abierto", "La Parrilla"],
     presentaciones: [
@@ -95,7 +91,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Lácteos y huevos",
-    color: "#3D6FB6",
     frase: "Mantener refrigerado.",
     marcas: ["La Pradera", "Valle Blanco", "Granja Alba", "Doña Lucha"],
     presentaciones: [
@@ -135,7 +130,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Panadería",
-    color: "#B5782E",
     frase: "Horneado en el día.",
     marcas: ["Horno Dorado", "La Espiga", "Masa Madre", "Pan del Barrio"],
     presentaciones: [
@@ -175,7 +169,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Despensa",
-    color: "#8A6D3B",
     frase: "Conservar en un lugar fresco y seco.",
     marcas: ["Buen Grano", "Alacena", "Sabor Casero", "Del Molino"],
     presentaciones: [
@@ -215,7 +208,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Bebidas",
-    color: "#1E88A8",
     frase: "Servir bien frío.",
     marcas: ["Fuente Clara", "Tropical Sur", "Burbuja", "Río Fresco"],
     presentaciones: [
@@ -255,7 +247,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Snacks y dulces",
-    color: "#C2477F",
     frase: "Ideal para compartir.",
     marcas: ["Crujimax", "Dulce Antojo", "Pica Pica", "La Golosina"],
     presentaciones: [
@@ -295,7 +286,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Congelados",
-    color: "#4A7FA5",
     frase: "Mantener congelado a -18 °C.",
     marcas: ["Polo Sur", "Frío Listo", "Nevada", "Cocina Exprés"],
     presentaciones: [
@@ -335,7 +325,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Limpieza del hogar",
-    color: "#5E6BB8",
     frase: "Mantener fuera del alcance de los niños.",
     marcas: ["Brillo Total", "Casa Limpia", "Fresco Hogar", "Poder Azul"],
     presentaciones: [
@@ -375,7 +364,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Cuidado personal",
-    color: "#7B4FA3",
     frase: "Uso externo.",
     marcas: ["Piel Suave", "Aura", "Vital Care", "Brisa"],
     presentaciones: [
@@ -415,7 +403,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Bebés",
-    color: "#D9822B",
     frase: "Probado por pediatras.",
     marcas: ["Nenitos", "Dulce Cuna", "Pequeñín", "Mimo"],
     presentaciones: [
@@ -455,7 +442,6 @@ export const SURTIDO: CategoriaDelSurtido[] = [
   },
   {
     nombre: "Mascotas",
-    color: "#55764A",
     frase: "Alimento y cuidado para tu mascota.",
     marcas: ["Patitas", "Fiel Amigo", "Bigotes", "Cola Feliz"],
     presentaciones: [

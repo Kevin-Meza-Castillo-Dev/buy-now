@@ -45,11 +45,23 @@ describe("generarDatos", () => {
       expect(producto.descripcion.trim()).not.toBe("");
       expect(Number.isInteger(producto.precio_centavos)).toBe(true);
       expect(producto.precio_centavos).toBeGreaterThan(0);
-      expect(producto.foto_ruta).toBe(`${producto.codigo}.webp`);
+      expect(producto.foto_ruta).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*\.webp$/);
       expect(producto.activo).toBe(true);
       expect(Number.isInteger(producto.stock_inicial)).toBe(true);
       expect(producto.stock_inicial).toBeGreaterThanOrEqual(0);
     }
+  });
+
+  it("da una foto a cada tipo de producto, que comparten sus 5 presentaciones", () => {
+    const porFoto = new Map<string, number>();
+    for (const producto of datos.productos) {
+      porFoto.set(producto.foto_ruta, (porFoto.get(producto.foto_ruta) ?? 0) + 1);
+    }
+
+    expect(porFoto.size).toBe(300);
+    expect([...porFoto.values()].every((veces) => veces === 5)).toBe(true);
+    expect(datos.productos[0]!.foto_ruta).toBe("limon.webp");
+    expect(datos.productos[125]!.foto_ruta).toBe("pechuga-de-pollo.webp");
   });
 
   it("no repite códigos ni nombres", () => {
