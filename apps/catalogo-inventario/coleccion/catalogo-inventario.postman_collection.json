@@ -92,7 +92,13 @@
               "raw": "{{url}}/productos/:id",
               "host": ["{{url}}"],
               "path": ["productos", ":id"],
-              "variable": [{ "key": "id", "value": "1", "description": "Id del producto. Toma uno de la lista de productos." }]
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Id del producto. Toma uno de la lista de productos."
+                }
+              ]
             }
           }
         },
