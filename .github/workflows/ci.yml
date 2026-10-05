@@ -38,6 +38,7 @@ jobs:
       - run: pnpm run formato:revisar
       - run: pnpm -r lint
       - run: pnpm -r typecheck
+      - run: pnpm -r build
       - run: pnpm -r test
       - run: pnpm -r migrate
       - run: pnpm -r test:integration

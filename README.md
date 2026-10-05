@@ -6,7 +6,7 @@ La regla central: el stock se reserva al entrar al carrito y ninguna unidad se p
 
 ## Estado
 
-En construcción. Hoy existen el monorepo, la configuración compartida y los contratos de las API y de los eventos. Los servicios y la app todavía no.
+En construcción. Hoy existen el monorepo, los contratos de las API y de los eventos, y el comienzo de `catalogo-inventario`: el modelo de datos, los 1.500 productos de prueba con sus fotos y el endpoint de categorías. Los demás servicios y la app todavía no.
 
 ## Partes
 
@@ -47,6 +47,7 @@ Desde la raíz:
 | `pnpm install` | Instala las dependencias |
 | `pnpm -r lint` | ESLint en todos los paquetes |
 | `pnpm -r typecheck` | Revisa los tipos en todos los paquetes |
+| `pnpm -r build` | Compila los servicios a `dist/` |
 | `pnpm -r test` | Pruebas unitarias |
 | `pnpm run formato` | Aplica Prettier; `formato:revisar` solo comprueba |
 | `pnpm --filter catalogo-inventario fotos:descargar` | Baja las fotos de `datos/fotos.json` que falten en `fotos/` y las recorta |
