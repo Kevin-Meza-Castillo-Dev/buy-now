@@ -1,0 +1,51 @@
+{
+  "info": {
+    "name": "Buy Now: catálogo e inventario",
+    "description": "Peticiones del servicio catalogo-inventario. La variable `url` apunta al servicio; por defecto, al que corre en local.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "url", "value": "http://localhost:3000" }],
+  "item": [
+    {
+      "name": "Catálogo",
+      "item": [
+        {
+          "name": "Categorías",
+          "request": {
+            "method": "GET",
+            "description": "Todas las categorías, en su orden de aparición.",
+            "url": { "raw": "{{url}}/categorias", "host": ["{{url}}"], "path": ["categorias"] }
+          }
+        },
+        {
+          "name": "Productos, primera página",
+          "request": {
+            "method": "GET",
+            "description": "Una página de 20 productos activos, por el orden de su categoría y después por nombre.",
+            "url": {
+              "raw": "{{url}}/productos?pagina=1",
+              "host": ["{{url}}"],
+              "path": ["productos"],
+              "query": [
+                { "key": "pagina", "value": "1", "description": "Número de página, desde 1." }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Productos, página no válida (422)",
+          "request": {
+            "method": "GET",
+            "description": "Responde 422 `datos_invalidos` con el campo que falló.",
+            "url": {
+              "raw": "{{url}}/productos?pagina=0",
+              "host": ["{{url}}"],
+              "path": ["productos"],
+              "query": [{ "key": "pagina", "value": "0" }]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

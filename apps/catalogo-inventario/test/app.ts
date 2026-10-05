@@ -4,6 +4,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import type pg from "pg";
 import { ModuloApp } from "../src/app.ts";
 import { BASE_DE_DATOS } from "../src/db/base.ts";
+import { montarDocumentacion } from "../src/documentacion.ts";
 
 // Levanta el servicio sobre la transacción de la prueba: lo que la prueba inserta lo ve
 // el servicio, y todo se deshace al terminar.
@@ -13,6 +14,7 @@ export async function levantarApp(cliente: pg.Client): Promise<NestFastifyApplic
     .useValue(drizzle(cliente))
     .compile();
   const app = modulo.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+  montarDocumentacion(app);
   await app.init();
   await app.getHttpAdapter().getInstance().ready();
   return app;
