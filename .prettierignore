@@ -8,3 +8,4 @@ docs
 specs
 .specify
 *.md
+**/migraciones/meta
