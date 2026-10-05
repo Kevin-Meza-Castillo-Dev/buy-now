@@ -1,5 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import { ARCHIVO_DE_DATOS, type DatosDePrueba, type ProductoDePrueba } from "./datos.ts";
+import { archivoDeFoto } from "./fotos.ts";
 import { SURTIDO } from "./surtido.ts";
 
 // Genera el conjunto fijo de datos de prueba de RF-012: 12 categorías y 125 productos
@@ -51,7 +52,8 @@ export function generarDatos(): DatosDePrueba {
           nombre: `${base} ${marca} ${presentacion}`,
           descripcion: `${base} de la marca ${marca}, en presentación de ${presentacion}. ${categoria.frase}`,
           precio_centavos: Math.max(5, Math.round(precio / 5) * 5),
-          foto_ruta: `${codigo}.webp`,
+          // Las presentaciones de un mismo producto base comparten la foto.
+          foto_ruta: archivoDeFoto(base),
           categoria_id: indice + 1,
           activo: true,
           stock_inicial: stockInicial(),
