@@ -1,0 +1,19 @@
+{
+  "name": "proyeccion-stock",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integracion.config.ts"
+  },
+  "dependencies": {
+    "@buy-now/contratos": "workspace:^",
+    "@confluentinc/kafka-javascript": "^1.10.1",
+    "ioredis": "^6.0.0"
+  }
+}

@@ -6,7 +6,7 @@ La regla central: el stock se reserva al entrar al carrito y ninguna unidad se p
 
 ## Estado
 
-En construcción. Hoy existen el monorepo, los contratos de las API y de los eventos, y el comienzo de `catalogo-inventario`: el modelo de datos, los 1.500 productos de prueba con sus fotos y los endpoints del catálogo: categorías, lista de productos con páginas, búsqueda por nombre y filtro por categoría, detalle de un producto, fotos y stock visible, que se lee de Redis y, si Redis no responde, de Postgres. Las respuestas del catálogo se guardan 60 segundos en Redis, y cada IP tiene un límite de peticiones por minuto. Los demás servicios y la app todavía no.
+En construcción. Hoy existen el monorepo, los contratos de las API y de los eventos, y el comienzo de `catalogo-inventario`: el modelo de datos, los 1.500 productos de prueba con sus fotos y los endpoints del catálogo: categorías, lista de productos con páginas, búsqueda por nombre y filtro por categoría, detalle de un producto, fotos y stock visible, que se lee de Redis y, si Redis no responde, de Postgres. Las respuestas del catálogo se guardan 60 segundos en Redis, y cada IP tiene un límite de peticiones por minuto. También existe `proyeccion-stock`, que lee los eventos de stock de Kafka y mantiene el stock visible en Redis; todavía nadie publica esos eventos, porque la reserva no existe. Los demás servicios y la app todavía no.
 
 ## Partes
 
@@ -75,6 +75,15 @@ Variables opcionales de `catalogo-inventario`:
 | `PUERTO` | Puerto en el que escucha | 3000 |
 | `LIMITE_DE_PETICIONES_POR_MINUTO` | Peticiones por minuto que se aceptan de una IP; al pasarlo responde 429. Con 0 no limita. Las fotos no cuentan | 300 |
 | `SALTOS_DE_PROXY` | Cuántos proxies hay delante, para tomar la IP del cliente de `X-Forwarded-For`. Con 0 la cabecera se ignora | 0 |
+
+## Proyección de stock
+
+`proyeccion-stock` lee el topic `inventario.eventos` de Kafka y escribe en Redis el stock visible de cada producto, en la clave `stock:{producto_id}`. Un evento repetido o atrasado no pisa un valor más nuevo, y un mensaje que no es un evento de stock se salta con un aviso. Necesita `REDIS_URL` y `KAFKA_BROKERS`, la lista de brokers separada por comas:
+
+```sh
+pnpm -r build
+pnpm --filter proyeccion-stock start
+```
 
 ## Fotos de los productos
 
