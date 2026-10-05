@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { inArray } from "drizzle-orm";
 import type { Redis } from "ioredis";
+import { PREFIJO_DEL_STOCK } from "../claves-de-redis.ts";
 import { BASE_DE_DATOS, type BaseDeDatos } from "../db/base.ts";
 import { stock } from "../db/esquema.ts";
 import { REDIS } from "../redis.ts";
@@ -21,7 +22,7 @@ return 1
 `;
 
 function clave(productoId: number): string {
-  return `stock:${productoId}`;
+  return `${PREFIJO_DEL_STOCK}${productoId}`;
 }
 
 // El stock que se muestra. Se lee de Redis, donde lo mantiene `proyeccion-stock`; si falta
