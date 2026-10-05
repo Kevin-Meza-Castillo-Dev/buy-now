@@ -9,6 +9,8 @@
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
+    "test:integration": "pnpm -r test:integration",
+    "migrate": "pnpm -r migrate",
     "formato": "prettier --write .",
     "formato:revisar": "prettier --check ."
   },
