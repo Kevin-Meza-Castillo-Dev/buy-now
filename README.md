@@ -54,7 +54,7 @@ Desde la raíz:
 
 ## Documentación del API
 
-Con `catalogo-inventario` corriendo en local:
+Swagger es solo para desarrollo: con `NODE_ENV=production` el servicio no lo publica. Con `catalogo-inventario` corriendo en local:
 
 - Swagger: `http://localhost:3000/docs`. El documento OpenAPI está en `/docs-json`.
 - Postman: importa `apps/catalogo-inventario/coleccion/catalogo-inventario.postman_collection.json`. La variable `url` apunta a `http://localhost:3000`.

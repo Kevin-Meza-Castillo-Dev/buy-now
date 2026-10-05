@@ -88,3 +88,30 @@ describe("documentación del API", () => {
     }
   });
 });
+
+// Spec 001, T074. Swagger es una ayuda de desarrollo: en producción no se publica.
+describe("documentación del API en producción", () => {
+  let cliente: pg.Client;
+  let app: NestFastifyApplication;
+  const entorno = process.env.NODE_ENV;
+
+  beforeAll(async () => {
+    process.env.NODE_ENV = "production";
+    cliente = await abrirTransaccion();
+    app = await levantarApp(cliente);
+  });
+
+  afterAll(async () => {
+    process.env.NODE_ENV = entorno;
+    await app.close();
+    await deshacerTransaccion(cliente);
+  });
+
+  it.each(["/docs", "/docs-json"])("GET %s responde 404", async (ruta) => {
+    await request(app.getHttpServer()).get(ruta).expect(404);
+  });
+
+  it("el catálogo sigue respondiendo", async () => {
+    await request(app.getHttpServer()).get("/categorias").expect(200);
+  });
+});
